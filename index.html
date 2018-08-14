@@ -1,0 +1,68 @@
+<!DOCTYPE.html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <title>json-server</title>
+  </head>
+
+  <body>
+
+    <div id="create">
+      <input type="text" placeholder="title">
+      <a href="javascript:;">Create</a>
+    </div>
+    <div id="delete">
+      <input type="text" placeholder="id">
+      <a href="javascript:;">Delete</a>
+    </div>
+
+    <ul id="items"></ul>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js'></script>
+    <script>
+      $(function () {
+        $.ajax({
+          url: "http://localhost:3000/todo",
+          method: "get",
+          dataType: "json",
+          data: {},
+        }).done(function (res) {
+          console.log(res);
+          $("#items").empty()
+          res.forEach(function (todo) {
+            $("#items").append("<li>" + todo.id + ".   " + todo.title + "</li>")
+          });
+        }).fail(function (err) {
+          console.log(err);
+        })
+        $("#create > a").on("click", function () {
+          let title = $("#create > input").val().trim();
+          if (!title) return false;
+          $.ajax({
+            url: "http://localhost:3000/todo",
+            method: "post",
+            dataType: "json",
+            data: {
+              title: title
+            }
+          })
+        })
+        $("#delete > a").on("click", function () {
+          let id = $("#delete > input").val().trim();
+          if (!id) return false;
+          $.ajax({
+            url: "http://localhost:3000/todo/" + id,
+            method: "delete",
+            dataType: "json"
+          }).done(function(res) {
+            console.log(res);
+          }).fail(function(err) {
+            console.log(err);
+          })
+        })
+      })
+    </script>
+  </body>
+
+</html>
